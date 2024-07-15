@@ -1,0 +1,119 @@
+#Step 1: Import Required Libraries
+
+import numpy as np
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import SVC
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+
+#Step 2: Load the Dataset
+# Load dataset
+url = "https://raw.githubusercontent.com/justmarkham/pycon-2016-tutorial/master/data/sms.tsv"
+df = pd.read_csv(url, sep='\t', header=None, names=['label', 'message'])
+
+# Convert label to binary
+df['label'] = df['label'].map({'ham': 0, 'spam': 1})
+
+#Step 3: Split the Data
+
+X = df['message']
+y = df['label']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+
+#Step 4: Create a Pipeline
+#Naive Bayes Pipeline
+nb_pipeline = Pipeline([
+    ('vect', CountVectorizer()),
+    ('tfidf', TfidfTransformer()),
+    ('clf', MultinomialNB())
+])
+
+#SVM Pipeline
+svm_pipeline = Pipeline([
+    ('vect', CountVectorizer()),
+    ('tfidf', TfidfTransformer()),
+    ('clf', SVC(kernel='linear'))
+])
+
+#Step 5: Train the Models
+#Train Naive Bayes
+nb_pipeline.fit(X_train, y_train)
+
+#Train SVM
+svm_pipeline.fit(X_train, y_train)
+
+
+#Step 6: Evaluate the Models
+#Evaluate Naive Bayes
+y_pred_nb = nb_pipeline.predict(X_test)
+print("Naive Bayes Classifier")
+print(classification_report(y_test, y_pred_nb))
+print("Accuracy:", accuracy_score(y_test, y_pred_nb))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred_nb))
+
+#Evaluate SVM
+y_pred_svm = svm_pipeline.predict(X_test)
+print("SVM Classifier")
+print(classification_report(y_test, y_pred_svm))
+print("Accuracy:", accuracy_score(y_test, y_pred_svm))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred_svm))
+
+
+
+#Complete Code
+import numpy as np
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import SVC
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+
+# Load dataset
+url = "https://raw.githubusercontent.com/justmarkham/pycon-2016-tutorial/master/data/sms.tsv"
+df = pd.read_csv(url, sep='\t', header=None, names=['label', 'message'])
+df['label'] = df['label'].map({'ham': 0, 'spam': 1})
+
+# Split data
+X = df['message']
+y = df['label']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Naive Bayes pipeline
+nb_pipeline = Pipeline([
+    ('vect', CountVectorizer()),
+    ('tfidf', TfidfTransformer()),
+    ('clf', MultinomialNB())
+])
+
+# SVM pipeline
+svm_pipeline = Pipeline([
+    ('vect', CountVectorizer()),
+    ('tfidf', TfidfTransformer()),
+    ('clf', SVC(kernel='linear'))
+])
+
+# Train models
+nb_pipeline.fit(X_train, y_train)
+svm_pipeline.fit(X_train, y_train)
+
+# Evaluate Naive Bayes
+y_pred_nb = nb_pipeline.predict(X_test)
+print("Naive Bayes Classifier")
+print(classification_report(y_test, y_pred_nb))
+print("Accuracy:", accuracy_score(y_test, y_pred_nb))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred_nb))
+
+# Evaluate SVM
+y_pred_svm = svm_pipeline.predict(X_test)
+print("SVM Classifier")
+print(classification_report(y_test, y_pred_svm))
+print("Accuracy:", accuracy_score(y_test, y_pred_svm))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred_svm))
+
+
